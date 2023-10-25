@@ -1,0 +1,158 @@
+<div class="layout">
+  <!-- ------------------------------- sidebar ------------------------------- -->
+  <aside [class.active]="!sidebarActive" class="sidebar d-flex flex-column">
+    <div id="logo-details" class="flex-grow-0 d-flex justify-content-evenly">
+      <!-- <img
+        id="logo"
+        src="assets/images/logo.png"
+        height="50"
+        alt="takid-logo"
+        /> -->
+
+      <img src="assets/images/svgs/modonWhiteLogo.png" class="ms-2" height="80" alt="modon logo" title="modon" />
+      <img src="assets/images/svgs/takidWhiteLogo.png" height="80" alt="takid logo" title="takid" />
+
+    </div>
+
+    <!-- ---------------------------- sidebar links ---------------------------- -->
+
+    <ul class="nav-links flex-grow-1">
+      <ng-container *ngFor="let item of sidebarMenu ,let i=index">
+        <li *ngIf="!item.children">
+          <a [routerLink]="item.link" routerLinkActive="active">
+            <div class="sidebar-icon">
+              <span class="icon_wrapper">
+                <ion-icon *ngIf="item.icon" [name]="item.icon"></ion-icon>
+                <svg-icon *ngIf="item.image" [src]="item.image"></svg-icon>
+              </span>
+            </div>
+            <span class="link_name" [translate]="'sidebar.' + item.name"></span>
+          </a>
+        </li>
+        <li *ngIf="item.children">
+          <a [class.sub-list]="item.children" data-bs-toggle="collapse" routerLinkActive="active"
+            [attr.data-bs-target]="'#' + item.name" id=`a{{i}}` aria-expanded="true">
+            <div class="sidebar-icon">
+              <span class="icon_wrapper">
+                <ion-icon *ngIf="item.icon" [name]="item.icon"></ion-icon>
+                <svg-icon *ngIf="item.image" [src]="item.image"></svg-icon>
+              </span>
+            </div>
+            <span class="link_name" [translate]="'sidebar.' + item.name"></span>
+          </a>
+        </li>
+        <div [class.show]="router.url.includes(item.link)" *ngIf="item.children" class="collapse" [id]="item.name">
+          <ul class="sub_list_content">
+            <li *ngFor="let subItem of item.children">
+              <a [routerLink]="['/' + item.link + '/' + subItem.link]" routerLinkActive="active">
+                <div class="sidebar-icon">
+                  <ion-icon class="fs-5" *ngIf="subItem.icon" [name]="subItem.icon"></ion-icon>
+                  <svg-icon *ngIf="subItem.image" [src]="subItem.image"></svg-icon>
+                </div>
+                <span [translate]="'sidebar.' + subItem.name"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+    </ul>
+
+    <div class="footer flex-grow-0">
+      <ul class="nav-links">
+        <li>
+          <a [routerLink]="[routing.settings]" routerLinkActive="active">
+            <div class="sidebar-icon">
+              <span class="icon_wrapper">
+                <svg-icon src="assets/images/svgs/settings.svg"></svg-icon>
+              </span>
+            </div>
+            <span class="link_name" translate="global.settings"></span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- <div class="pattern"></div> -->
+    </div>
+  </aside>
+
+  <main class="content">
+    <!-- ------------------------------- navbar -------------------------------- -->
+    <nav>
+      <!-- ------------------------------- toggler ------------------------------- -->
+      <div class="sidebar-btn d-flex gap-3 align-items-center">
+        <svg-icon (click)="sidebarActive = !sidebarActive" svgClass="c-pointer"
+          src="assets/images/svgs/menu.svg"></svg-icon>
+        <div class="fw-400 text-info fs-18 fw-600 text-capitalize d-none d-lg-block">
+          <span translate="global.welcome"></span>
+          <span class="fw-bold text-primary">
+            {{ user?.firstName }} {{ user?.lastName }}
+          </span>
+        </div>
+      </div>
+
+      <!-- -------------------------------- tools -------------------------------- -->
+      <div class="d-flex gap-3 align-items-center">
+        <!-- ------------------------------- search -------------------------------- -->
+        <!-- <div id="search" class="fs-5 d-flex d-md-none">
+          <ion-icon name="search"></ion-icon>
+        </div>
+
+        <div class="input-group bg-info-o d-none d-md-flex flex-shrink-1">
+          <span
+            class="input-group-text fs-5 px-2 bg-transparent text-info border-0"
+            id="search"
+          >
+            <ion-icon name="search"></ion-icon>
+          </span>
+          <input
+            type="text"
+            class="form-control"
+            [placeholder]="'global.search' | translate"
+            aria-describedby="search"
+          />
+        </div> -->
+
+        <!-- -------------------------------- lang --------------------------------- -->
+        <div id="lang" (click)="onLangChange()">
+          <span translate="lang"></span>
+        </div>
+
+        <!-- ---------------------------- notification ----------------------------- -->
+        <!-- <div class="full" id="notification">
+          <svg-icon src="assets/images/svgs/bell.svg"></svg-icon>
+        </div> -->
+
+        <!-- ---------------------------- profile image ---------------------------- -->
+        <div id="user" class="dropdown">
+          <a id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            <img [src]="user?.photo?.fullLink" id="user-img" onerror="this.src='assets/images/icons/person.png'" />
+          </a>
+
+          <ul class="dropdown-menu text-capitalize p-0 overflow-hidden w-fit mt-2 rounded-12"
+            aria-labelledby="dropdownMenuButton">
+            <li>
+              <a class="dropdown-item" (click)="logout()">
+                <div class="icon bg-danger-o flex-shrink-0">
+                  <i class="fa-solid fa-power-off text-danger"></i>
+                </div>
+                {{ "sidebar.logout" | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- <div class="px-4">
+      <hr class="mt-0" />
+    </div> -->
+
+    <!-- ----------------------------------------------------------------------- -->
+    <!-- ----------------------------------------------------------------------- -->
+    <!-- ------------------------------- content ------------------------------- -->
+    <section class="container-fluid">
+      <div class="p-2 pb-4">
+        <router-outlet></router-outlet>
+      </div>
+    </section>
+  </main>
+</div>

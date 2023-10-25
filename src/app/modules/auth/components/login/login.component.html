@@ -1,0 +1,67 @@
+<div class=" container py-5">
+  <div class="d-flex w-100 align-items-center">
+    <div class="ps-lg-4 w-100">
+      <h2 class="fw-600 text-primary" translate="auth.welcome_back"></h2>
+      <p class="fw-500 text-info" translate="auth.please_login_to_continue"></p>
+
+      <p *ngIf="message" class="error-message">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        {{ message }}
+      </p>
+      <p *ngIf="error" class="error-message">
+        <i *ngIf="lang.isAr | async" class="fa-solid fa-circle-exclamation"></i>
+        {{ "global.error" |translate}}
+
+      </p>
+      <form [formGroup]="loginForm" (ngSubmit)="login()" #form="ngForm" class="mt-4 py-2">
+        <div class="mb-3">
+          <div class="form-floating">
+            <input type="text" class="form-control bg-white" id="userName" placeholder="data" formControlName="userName" />
+            <label for="userName" translate="global.email"></label>
+          </div>
+          <div class="mb-3" *ngIf="controls['userName'].invalid && form.submitted">
+            <div class="error-message" *ngIf="controls['userName'].errors?.pattern && form.submitted">
+              <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+              {{ "validation.email_is_not_valid" | translate }}
+            </div>
+
+            <div class="error-message" *ngIf="controls['userName'].errors?.required && form.submitted">
+              <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+              {{ "validation.email_required" | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="form-floating">
+            <input type="password" class="form-control bg-white" id="password" placeholder="data" formControlName="password" />
+            <label for="password" translate="global.password"></label>
+          </div>
+
+          <div class="error-message mb-3" *ngIf="controls['password'].errors?.required && form.submitted">
+            <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+            {{ "validation.password_required" | translate }}
+          </div>
+        </div>
+        <div class="form-check mb-1 text-info">
+          <div class="d-flex justify-content-between">
+            <div class="form-check mb-1 text-info">
+              <input class="form-check-input" type="checkbox" id="remembercheckbox" (change)="change($event)" />
+              <label class="form-check-label" for="remembercheckbox" translate="global.remember_me">
+              </label>
+            </div>
+          </div>
+         
+        </div>
+        <a class="text-info text-decoration-none" [routerLink]="[forgetPassword]" translate="global.forget_password"
+        style="display:block;">
+      </a>
+
+        <button type="submit" class="btn mt-4 btn-primary py-2 d-flex align-items-center gap-4 rounded-8">
+          <span translate="auth.login"> </span>
+          <img src="assets/images/icons/arrow.png" class="img-fluid d-block rtl-flip" alt="arrow" />
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

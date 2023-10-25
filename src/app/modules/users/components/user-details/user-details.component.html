@@ -1,0 +1,70 @@
+<div class="d-flex flex-column h-100">
+    <div class="flex-fill">
+      <h4 class="text-align-center fw-bold mt-3 mb-4" translate="users.user_details"></h4>
+  
+      <div class="card rounded-10 bg-primary-o border-0 mb-3">
+        <div class="card-body">
+          <div class="d-flex">
+            <div class="flex-shrink-0">
+              <img width="60" height="60" class="obj-cover rounded-10 obj-position-c"
+                [src]="userDetails?.photo?.fullLink" [title]="" />
+            </div>
+            <div class="flex-grow-1 mis-3">
+              <h5 class="mt-0">
+                {{ userDetails?.firstName }} {{userDetails?.middleName}} {{userDetails?.lastName}}
+              </h5>
+              <p class="limit-3">
+                {{userDetails?.email}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+     
+  
+      <div class="card bg-warning-o rounded-10 border-0 my-3">
+        <div class="card-body">
+          <h6 class="text-info" translate="users.current_status"></h6>
+          <div class="d-flex text-primary">
+            <div class="flex-grow-1">
+              <p class="limit-3 m-0" *ngIf="userDetails?.isActive">
+                {{'Rasd.active'|translate}}
+              </p>
+              <p class="limit-3 m-0" *ngIf="!userDetails?.isActive">
+                {{'Rasd.DeActiveUser'|translate}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="card bg-warning-o rounded-10 border-0 my-3">
+        <div class="card-body">
+          <h6 class="text-info" translate="agents.agent_mobileNumber"></h6>
+          <div class="d-flex text-primary">
+              <p class="limit-3 m-0">
+                {{userDetails?.phoneNumer}}
+              </p>
+          </div>
+        </div>
+      </div>
+     
+  
+      <div class="card bg-warning-o rounded-10 border-0 my-3">
+        <div class="card-body">
+          <h6 class="text-info" translate="global.role"></h6>
+          <div class="d-flex text-primary">
+            <p class="limit-3 m-0" *ngIf="userDetails?.isTakidSuperAdmin">
+              {{'global.Superadmin'|translate}}
+            </p>
+            <p class="limit-3 m-0" *ngIf="!userDetails?.isTakidSuperAdmin">
+              {{'global.Admin'|translate}}
+            </p>
+          </div>
+        </div>
+      </div>
+  
+  
+    </div>
+  </div>

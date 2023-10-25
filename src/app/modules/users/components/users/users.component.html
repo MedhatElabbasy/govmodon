@@ -1,0 +1,366 @@
+<button type="button" class="btn btn-primary d-block mis-auto px-4 rounded-8 mb-3 d-flex gap-2 align-items-center"
+  (click)="openCanvas(canvasID)">
+  <ion-icon name="add"></ion-icon>
+  {{ "global.add" | translate }}
+</button>
+
+<div class="card rounded-12 border-0 mt-2">
+  <div class="card-body">
+    <header class="d-flex gap-3 flex-wrap justify-content-between align-items-center">
+      <div class="col-12 col-sm-4">
+        <div class="input-group">
+          <span class="input-group-text border-0 bg-transparent" id="search">
+            <ion-icon name="search"></ion-icon>
+          </span>
+          <input [(ngModel)]="searchKey" type="text" class="form-control" [placeholder]="'global.search' | translate"
+          aria-label="search" aria-describedby="search" />
+        </div>
+      </div>
+
+      <div class="d-flex col-12 col-sm justify-content-between justify-content-sm-end gap-3">
+
+
+        <button  class="btn rounded-m rounded-8 btn-primary d-flex gap-2 align-items-center" (click)="clear()"  type="button">
+        
+          {{ "global.clear"| translate }}
+        </button>
+        
+        <div class="dropdown">
+          <button class="btn d-flex text-info gap-2 align-items-center rounded-m rounded-8 bg-info-o  dropdown-toggle"
+            type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ "global.order_by" | translate }}
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li class="dropdown-item" (click)="english()">{{"global.ascending"| translate}}</li>
+            <li class="dropdown-item" (click)="arabic()">{{"global.descending"| translate}}</li>
+          </ul>
+        </div>
+        <div class="dropdown menue2">
+          <button class="btn rounded-m rounded-8 btn-primary d-flex gap-2 align-items-center  dropdown-toggle "
+            type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-sliders"></i>
+            {{ "global.filtration" | translate }}
+          </button>
+          <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton2">
+            <li class="dropdown-item" (click)="filterActive()">{{"users.active" |translate}}</li>
+            <li class="dropdown-item" (click)="filterDeActive()">{{"users.DeActiveUser" |translate}}</li>
+
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <hr />
+
+    <div class="table-responsive">
+      <table class="table table-striped table-borderless">
+        <thead>
+          <tr>
+            <th scope="col" translate="global.name"></th>
+            <th scope="col" translate="global.contact_number"></th>
+            <th scope="col" translate="global.email"></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="cursor: pointer;"
+          (click)="openDetails(user,$event)" *ngFor="
+              let user of users | filter: searchKey
+                | paginate
+                  : {
+                      itemsPerPage: pageSize,
+                      currentPage: pageNumber,
+                      totalItems: users.length,
+                      id: 'users'
+                    }
+            ">
+            <td class="td-photo">
+              <div class="d-flex gap-3 align-items-center">
+                <img [src]="user?.photo?.fullLink" alt="logo" height="40" width="40" class="d-block obj-cover rounded-8"
+                  onerror="this.src='assets/images/icons/person.png'" />
+                <div class="fw-500">
+                  {{ user.firstName }} {{ user.lastName }}
+                </div>
+              </div>
+            </td>
+            <td>
+              {{ user.phoneNumer }}
+            </td>
+            <td>{{ user.email }}</td>
+            <td>
+              <div class="d-flex justify-content-end gap-4 align-items-center">
+                <div class="d-flex gap-3">
+                  <label *ngIf="user.isActive">
+                    {{ "Rasd.active" | translate }}
+                  </label>
+                  <label *ngIf="!user.isActive">
+                    {{ "Rasd.DeActiveUser" | translate }}
+                  </label>
+                  <p-inputSwitch [(ngModel)]="user.isActive" (click)="$event.stopImmediatePropagation();" (onChange)="changeState(user, $event)"></p-inputSwitch>
+                </div>
+                <div class="d-flex gap-2 justify-content-end">
+                  <!-- <button
+                  type="button"
+                  class="btn rounded-8 bg-primary-hover text-white edit"
+                >
+                  <i class="fa-solid fa-pen"></i>
+                </button> -->
+                  <!-- <button type="button" class="btn text-white rounded-8 bg-danger-hover delete">
+                    <i class="fa-solid fa-trash"></i>
+                  </button> -->
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!users?.length">
+            <td colspan="7">
+              <h6
+                translate="global.no_data_to_show"
+                class="fw-600 text-danger text-align-center"
+              ></h6>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr />
+
+    <div class="d-flex align-items-center justify-content-between gap-3">
+      <div class="text-info d-flex gap-3 align-items-center">
+        <label class="fw-500" translate="global.for_page"></label>
+        <div>
+          <select class="form-select" (change)="onPageSizeChange($event)">
+            <option *ngFor="let size of sizes" [selected]="size == pageSize">
+              {{ size }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <pagination-controls id="users" (pageChange)="onPageChange($event)" (pageBoundsCorrection)="onPageChange($event)"
+        [maxSize]="3" [responsive]="true" [previousLabel]="''" [nextLabel]="''" screenReaderPaginationLabel="Pagination"
+        screenReaderPageLabel="page" screenReaderCurrentLabel="You're on page">
+      </pagination-controls>
+    </div>
+  </div>
+</div>
+
+<app-offcanvas [id]="canvasID">
+  <form [formGroup]="userForm" #form="ngForm" (ngSubmit)="addUser()"
+    class="d-flex flex-column gap-3 h-100 p-1 overflow-visible">
+    <div>
+      <h3 translate="users.add_user" class="text-align-center fw-bold"></h3>
+      <div class="mt-4 bg-info-o d-flex text-info justify-content-between gap-3 align-items-center p-2 rounded-8">
+        <label translate="users.current_status"></label>
+        <p-inputSwitch formControlName="isActive"></p-inputSwitch>
+      </div>
+      <div class="user-photo bg-info-o my-4 mx-auto text-info">
+        <img *ngIf="profileImage" [src]="profileImage | sanitizer" alt="user_image" class="user_image"
+          (click)="userPhoto.click()" />
+        <div [hidden]="profileImage" class="p-3" (click)="userPhoto.click()">
+          <img src="assets/images/svgs/upload_user_img.svg" alt="" />
+          <div class="lh-sm mt-3" translate="users.click_here_to_upload_user_image"></div>
+          <input (change)="onImageUpload($event)" type="file" hidden #userPhoto />
+        </div>
+      </div>
+
+
+      <!-------------------------------------------Name----------------------------------->
+      <div class="mb-3">
+        <div class="form-floating">
+          <div class="form-floating">
+            <input type="text" formControlName="firstName" class="form-control" id="firstName" placeholder="data" />
+            <label style="padding-right: 5px;" for="firstName" translate="validation.first_name"></label>
+            <div *ngIf="form.submitted &&  userControls['firstName']?.errors?.required" class="error-message"
+              [innerHtml]="'validation.first_name_is_required' | translate"></div>
+
+            <div *ngIf="form.submitted &&  userControls['firstName']?.errors?.pattern" class="error-message">
+              <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
+              {{ 'validation.not_valid_to_use' | translate }}
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="mb-3">
+
+
+        <div class="form-floating ">
+          <input type="text" formControlName="middleName" class="form-control" id="middleName" placeholder="data" />
+          <label for="middleName" translate="validation.middle_name"></label>
+
+          <div *ngIf=" form.submitted && userControls['middleName']?.errors?.required" class="error-message"
+            [innerHtml]="'validation.middel_name_is_required' | translate">
+          </div>
+
+          <div *ngIf="form.submitted && userControls['middleName']?.errors?.pattern" class="error-message">
+            <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
+            {{ 'validation.not_valid_to_use' | translate }}
+           </div>
+
+
+          </div>
+          
+
+      </div>
+
+      <div class="mb-3">
+  
+        <div class="form-floating ">
+          <input type="text" formControlName="lastName" class="form-control" id="lastName" placeholder="data" />
+          <label for="lastName" translate="validation.last_name"></label>
+          <div *ngIf="form.submitted && userControls['lastName']?.errors?.required" class="error-message"
+            [innerHtml]="'validation.last_name_is_required' | translate"></div>
+          <div *ngIf="form.submitted && userControls['lastName']?.errors?.pattern" class="error-message">
+            <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
+            {{ 'validation.not_valid_to_use' | translate }}
+          </div>
+        
+      </div>
+
+      </div>
+
+      <!-- -------------------------------- email -------------------------------- -->
+      <div class="form-floating mb-3">
+        <input type="email" class="form-control" id="email" placeholder="data" formControlName="email" />
+        <label for="email" translate="global.email"></label>
+      </div>
+
+      <div class="mb-3" *ngIf="userControls['email'].invalid && form.submitted">
+        <div class="error-message" *ngIf="userControls['email'].errors?.email && form.submitted">
+          <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+          {{ "validation.email_is_not_valid" | translate }}
+        </div>
+
+        <div class="error-message" *ngIf="userControls['email'].errors?.required && form.submitted">
+          <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+          {{ "validation.email_required" | translate }}
+        </div>
+      </div>
+      <!-----------------------------------password-------------------------------->
+
+      <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="password" placeholder="data"
+          formControlName="defaultPassword" />
+        <label for="password" translate="global.password"></label>
+      </div>
+
+      <div class="error-message mb-3" *ngIf="userControls['defaultPassword'].invalid && form.submitted">
+        <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+        {{ "validation.password_not_valid" | translate }}
+      </div>
+
+      <!-- -------------------------------- phone -------------------------------- -->
+
+      <div class="mb-3">
+        <div class="form-floating">
+          <div class="form-control d-flex">
+            <select class="form-select py-0 w-fit" id="floatingSelect" [formControl]="code">
+              <option [value]="item.prefixCode" *ngFor="let item of codes">
+                {{ item.ioS2 }}
+              </option>
+            </select>
+            <input type="text" id="phone" class="form-control rounded-0 col p-0" formControlName="phoneNumer" />
+          </div>
+
+          <label for="phone" translate="global.mobile_number"></label>
+        </div>
+
+        <div *ngIf="userControls['phoneNumer'].invalid && form.submitted">
+          <div class="error-message mb-3" *ngIf="userControls['phoneNumer'].errors?.required">
+            <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+            {{ "validation.phone_required" | translate }}
+          </div>
+
+          <div class="error-message mb-3" *ngIf="userControls['phoneNumer'].errors?.pattern">
+            <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+            {{ "validation.phone_is_not_valid" | translate }}
+          </div>
+        </div>
+      </div>
+
+      <!-- -------------------------------- idNumber -------------------------------- -->
+
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" placeholder="data" formControlName="idNumber" />
+
+        <label for="idNumber" translate="global.id_number"></label>
+      </div>
+      <div class="error-message mb-3" *ngIf="check">
+        <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+        {{ "validation.id_number_exist" | translate }}
+      </div>
+      <div  *ngIf="userControls['idNumber'].invalid && form.submitted">
+        <div class="error-message mb-3" *ngIf="userControls['idNumber'].errors?.required">
+          <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+          {{ "validation.idNumber_required" | translate }}
+        </div>
+        <div class="error-message mb-3" *ngIf="userControls['idNumber'].errors?.pattern">
+          <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+          {{ "validation.idNumber_invalid" | translate }}
+        </div>
+      </div>
+
+
+
+      <!-- ________________________idNumberPhoto__________________ -->
+      <div class="my-3">
+        <div class="user-photo2 bg-info-o mx-auto text-info">
+          <img *ngIf="idNumberPhoto" [src]="idNumberPhoto | sanitizer" alt="id_image" class="id_image"
+            (click)="idPhoto.click()" />
+          <div [hidden]="idNumberPhoto" class="p-3" (click)="idPhoto.click()">
+            <img src="assets/images/icons/identity-card.png" alt="" width="80" height="80" class="obj-contain" />
+            <div class="lh-sm fs-6 mt-3" translate="users.click_here_to_upload_id_image"></div>
+            <input (change)="onIDImageUpload($event)" type="file" hidden #idPhoto />
+          </div>
+        </div>
+        <div class="error-message mb-3" *ngIf="userControls['idPhotoId'].errors?.required && form.submitted">
+          <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+          {{ "validation.id_photo_is_required" | translate }}
+        </div>
+      </div>
+
+      <!-- ________________________________________________ -->
+    </div>
+
+    <div class="flex-grow-1 d-flex justify-content-end align-items-end gap-2 pb-3">
+      <button type="button" class="btn px-4 rounded-8 btn-light bg-info-o" translate="global.cancel"
+        data-bs-dismiss="offcanvas" (click)="reset()"></button>
+      <button type="submit" class="btn px-4 rounded-8 btn-primary" translate="global.add"></button>
+    </div>
+  </form>
+</app-offcanvas>
+
+<!-------------------error--------------------------->
+<!-- <app-modal classList="modal-dialog-centered" [id]="modalID"> -->
+  <!-- <img src="assets/images/svgs/delete.svg" alt="" srcset="" /> -->
+  <!-- <h4 class="fw-700" translate="lookups.are_you_sure_about_deleting_area"></h4> -->
+  <!-- <p class="mt-2 text-info">{{errorMessage}}</p>
+  <div class="d-flex justify-content-end gap-2">
+    <button type="button" class="btn rounded-8 px-4 py-2 btn-light" translate="global.cancel"
+      (click)="closeModal(modalID)"></button>
+  </div>
+</app-modal> -->
+
+<!-- ------------------------------- delete --------------------------------
+<app-modal classList="modal-dialog-centered" [id]="modalID">
+  <img src="assets/images/svgs/delete.svg" alt="" srcset="" />
+  <h4 class="fw-700" translate="lookups.are_you_sure_about_deleting_area"></h4>
+  <p class="mt-2 text-info" translate="global.cancel_this_operation"></p>
+
+  <div class="d-flex justify-content-end gap-2">
+    <button type="button" class="btn rounded-8 px-4 py-2 btn-light" translate="global.cancel"
+      (click)="userId = ''; closeModal(modalID)"></button>
+    <button translate="global.yes_delete" type="button" class="btn rounded-8 px-4 py-2 btn-danger"
+      (click)="onDelete()"></button>
+  </div>
+</app-modal> -->
+<!-----------------------------userDetails---------------------------------------->
+
+<app-offcanvas [id]="canvasDetails">
+  <app-user-details [user]="selectedUser!"></app-user-details>
+</app-offcanvas>

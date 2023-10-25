@@ -1,0 +1,387 @@
+<h2 class="fw-700 mt-0" translate="global.settings"></h2>
+
+<div class="mt-4">
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card border-0 rounded-16 h-100">
+        <div class="card-body h-100">
+          <div class="d-flex flex-column h-100">
+            <div
+              class="d-flex justify-content-between gap-3 align-items-center flex-wrap"
+            >
+              <h4 class="m-0 fw-600">
+                {{ "settings.profile_personly" | translate }}
+              </h4>
+              <button (click)="edit()" id="edit" type="button" class="btn text-white btn-info">
+                <i class="fa-solid fa-pen" > </i>
+              </button>
+            </div>
+            <hr />
+            <div id="profile-grid" class="flex-grow-1">
+              <div
+                id="info"
+                class="d-flex gap-3 flex-row flex-wrap flex-lg-column"
+              >
+                <img
+                  width="150"
+                  height="150"
+                  [src]="user?.photo?.fullLink"
+                  onerror="this.src='assets/images/icons/person.png'"
+                  class="obj-cover rounded-10 mb-4 mb-md-2 d-block"
+                  alt="profile image"
+                />
+                <div class="text-wrap col">
+                  <h4 class="mb-2 mt-0 fw-600">
+                    {{ user?.firstName }} {{ user?.lastName }}
+                  </h4>
+
+                  <p class="mb-2 text-info text-wrap">
+                    {{ user?.email }}
+                  </p>
+                  <p class="mb-2 text-info">
+                    {{ user?.phoneNumer }}
+                  </p>
+                </div>
+              </div>
+              <div id="password">
+                <a
+                  class="text-info text-decoration-none c-pointer"
+                  (click)="openCanvas(canvasID); form.resetForm()"
+                >{{ "settings.change_password" | translate }}</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="card h-100 border-0 rounded-16">
+        <div class="card-body">
+          <div class="h-32px d-flex align-items-center">
+            <h4 class="m-0 fw-600">
+              {{ "settings.manage_notifications" | translate }}
+            </h4>
+          </div>
+          <hr />
+          <ul class="list-group">
+            <li
+              class="list-group-item align-items-startalign-items-md-center bg-info-o d-flex justify-content-between"
+            >
+              {{ "settings.register_company" | translate }}
+              <p-inputSwitch></p-inputSwitch>
+            </li>
+            <li
+              class="list-group-item align-items-start align-items-md-center d-flex justify-content-between"
+            >
+              {{ "settings.add_company" | translate }}
+              <p-inputSwitch></p-inputSwitch>
+            </li>
+            <li
+              class="list-group-item align-items-start align-items-md-center bg-info-o d-flex justify-content-between"
+            >
+              {{ "settings.new_contract" | translate }}
+              <p-inputSwitch></p-inputSwitch>
+            </li>
+            <li
+              class="list-group-item align-items-startalign-items-md-center d-flex justify-content-between"
+            >
+              {{ "settings.update_contract" | translate }}
+              <p-inputSwitch></p-inputSwitch>
+            </li>
+            <li
+              class="list-group-item align-items-start align-items-md-center bg-info-o d-flex justify-content-between"
+            >
+              {{ "settings.change_password" | translate }}
+
+              <p-inputSwitch></p-inputSwitch>
+            </li>
+            <li
+              class="list-group-item align-items-start align-items-md-center d-flex justify-content-between"
+            >
+              {{ "settings.expiration_date" | translate }}
+              <p-inputSwitch></p-inputSwitch>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-offcanvas [id]="canvasID">
+  <form
+    [formGroup]="changePasswordForm"
+    #form="ngForm"
+    (ngSubmit)="onSubmit()"
+    class="h-100"
+  >
+    <div class="h-100 d-flex flex-column">
+      <h3
+        translate="settings.change_password"
+        class="text-align-center fw-bold"
+      ></h3>
+
+      <div class="mt-4 flex-grow-1">
+        <div class="mb-3">
+          <div class="form-floating">
+            <input
+              type="password"
+              class="form-control"
+              id="oldPassword"
+              placeholder="oldPassword"
+              formControlName="oldPassword"
+            />
+            <label for="oldPassword" translate="settings.old_password"></label>
+          </div>
+          <div
+            class="error-message"
+            *ngIf="controls['oldPassword']?.errors?.required && form.submitted"
+          >
+            <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+            {{ "settings.old_password_Required" | translate }}
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="form-floating">
+            <input
+              type="password"
+              class="form-control"
+              id="newPassword"
+              placeholder="newPassword"
+              formControlName="newPassword"
+            />
+            <label for="newPassword" translate="settings.new_password"></label>
+          </div>
+          <div
+            class="error-message"
+            *ngIf="controls['newPassword']?.errors?.required && form.submitted"
+          >
+            <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+            {{ "settings.new_password_Required" | translate }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="form-floating">
+            <input
+              type="password"
+              class="form-control"
+              id="newPassword"
+              placeholder="newPassword"
+              formControlName="confirmNewPassword"
+            />
+            <label
+              for="newPassword"
+              translate="settings.confirm_new_password"
+            ></label>
+          </div>
+          <div
+            class="error-message"
+            *ngIf="controls['confirmNewPassword']?.errors?.required && form.submitted"
+          >
+            <ion-icon name="close-circle-outline" class="fs-5"></ion-icon>
+            {{ "settings.confirm_new_password_Required" | translate }}
+          </div>
+        </div>
+         <p *ngIf="error" class="error-message">
+          <i *ngIf="lang.isAr | async" class="fa-solid fa-circle-exclamation"></i>
+          {{  "settings.error" |translate}}
+        </p> 
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button
+          type="button"
+          class="btn px-4 rounded-8 btn-light"
+          translate="settings.cancel"
+          data-bs-dismiss="offcanvas"
+          (click)="form.resetForm()"
+        ></button>
+
+        <button
+          type="submit"
+          translate="settings.change_password"
+          class="btn px-4 rounded-8 btn-primary"
+          
+        ></button>
+      </div>
+    </div>
+  </form>
+</app-offcanvas>
+
+<app-offcanvas  app-offcanvas [id]="editCanvasID">
+  <form
+    [formGroup]="updateUserForm"
+    #form="ngForm"
+    (ngSubmit)="updateUSer(user)"
+    class="h-100"
+  >
+    <div class=" d-flex flex-column">
+      <h3
+        translate="settings.edit_Profile"
+        class="text-align-center fw-bold"
+      ></h3>
+
+       <div class="user-photo bg-info-o my-4 mx-auto text-info">
+        <img *ngIf="profileImage" [src]="profileImage | sanitizer" alt="user_image" class="user_image"
+          (click)="userPhoto.click()" />
+        <div [hidden]="profileImage" class="p-3" (click)="userPhoto.click()">
+          <img src="assets/images/svgs/upload_user_img.svg" alt="" />
+          <div class="lh-sm mt-3" translate="users.click_here_to_upload_user_image"></div>
+          <input required (change)="onImageUpload($event)" type="file" hidden #userPhoto />
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="controls['photoId']?.errors?.required && form.submitted"
+           [innerHtml]="'settings.image_required' | translate"></div>
+
+      <!-- <img
+        [src]="user?.photo?.fullLink"
+        onerror="this.src='assets/images/icons/person.png'"
+        class="mx-auto d-block mt-2"
+        alt="profile image"
+      />
+
+      <div class="d-flex gap-2 justify-content-center mt-3">
+        <button type="button" class="btn btn-sm text-white rounded-8 bg-info">
+          {{ "settings.edit" | translate }}
+        </button>
+
+        <button type="button" class="btn btn-sm text-white rounded-8 bg-danger">
+          {{ "settings.delete" | translate }}
+        </button> -->
+    </div>
+    <!---------------------------------------------------------------------------->
+
+    <div class="mt-4 flex-grow-1">
+
+      <!--------------------------------------------------------------------->
+      <!---------------------------------- Firstname --------------------------------- -->
+      <div class="mb-3 row">
+        <div class="form-floating col-4">
+          <div class="form-floating">
+            <input type="text" formControlName="firstName" class="form-control" id="firstName" placeholder="data" />
+            <label style="padding-right: 5px;" for="firstName" translate="global.first_name"></label>
+            <div *ngIf="form.submitted &&  controls['firstName']?.errors?.required" class="error-message"
+                 [innerHtml]="'validation.first_name_is_required' | translate"></div>
+
+            <div *ngIf="form.submitted &&  controls['firstName']?.errors?.pattern" class="error-message">
+              <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
+              {{ 'validation.not_valid_to_use' | translate }}
+            </div>
+
+
+          </div>
+        </div>
+        <!--------------------------------------middleName------------------------------------->
+        <div class="form-floating col-4">
+          <input type="text" formControlName="middleName" class="form-control" id="middleName" placeholder="data" />
+          <label for="middleName" translate="global.middle_name"></label>
+
+          <!-- <div *ngIf=" form.submitted && controls['middleName']?.errors?.required" class="error-message"
+            [innerHtml]="'settings.middle_name_required' | translate"></div>
+
+          <div *ngIf="form.submitted && controls['middleName']?.errors?.pattern" class="error-message">
+            <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
+            {{ 'settings.not_valid_to_use' | translate }}
+
+
+          </div> -->
+        </div>
+
+        <!--------------------------------------lastName------------------------------------->
+        <div class="form-floating col-4">
+          <input type="text" formControlName="lastName" class="form-control" id="lastName" placeholder="data" />
+          <label for="lastName" translate="global.last_name"></label>
+          <div *ngIf="form.submitted && controls['lastName']?.errors?.required" class="error-message"
+               [innerHtml]="'validation.last_name_is_required' | translate"></div>
+          <div *ngIf="form.submitted && controls['lastName']?.errors?.pattern" class="error-message">
+            <i class="fa-sharp fa-solid fa-circle-exclamation"></i>
+            {{ 'settings.not_valid_to_use' | translate }}
+          </div>
+        </div>
+
+
+
+      </div>
+
+
+
+
+      <!------------------------------Email------------------------------------->
+      <div class="mb-3">
+        <div class="form-floating">
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="email"
+            formControlName="email"
+          />
+          <label for="email" translate="settings.email"></label>
+        </div>
+      </div>
+      <!--------------------phone------------------------------------->
+
+      <div class="mb-3">
+        <div class="form-floating">
+          <div
+            type="text"
+            class="form-control"
+            id="phoneNumer"
+            placeholder="phoneNumer"
+          
+          >  {{ user?.phoneNumer }}</div>
+          <label for="phoneNumer" translate="settings.phone"></label>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="d-flex justify-content-end gap-2">
+      <button
+        type="button"
+        class="btn px-4 rounded-8 btn-light"
+        translate="settings.cancel"
+        data-bs-dismiss="offcanvas"
+        (click)="form.resetForm()"
+      ></button>
+
+      <button
+        type="submit"
+        translate="settings.update"
+        class="btn px-4 rounded-8 btn-primary"
+        data-bs-dismiss="offcanvas"
+      ></button>
+    </div>
+
+  </form>
+</app-offcanvas>
+<!---------------------------------------------------------------->
+
+<app-modal classList="modal-dialog-centered" [id]="modalID">
+  <p  class="mt-2 text-info">{{'settings.password_changed'| translate}}</p>
+  <!-- <p *ngIf="oldPassowrdError!=null" class="error-message">
+    <i *ngIf="lang.isAr | async" class="fa-solid fa-circle-exclamation"></i>
+    {{  "settings.oldPassword_error" |translate}}
+  </p>  -->
+  <div class="d-flex justify-content-end gap-2">
+    <button type="button" class="btn rounded-8 px-4 py-2 btn-light" translate="global.cancel"
+      (click)="closeModal(modalID)"></button>
+  </div>
+</app-modal>
+
+<!------------------------------------------------------------->
+<!-- <app-modal classList="modal-dialog-centered" [id]="modalid">
+  <p *ngIf="oldPassowrdError!=null" class="error-message">
+    <i *ngIf="lang.isAr | async" class="fa-solid fa-circle-exclamation"></i>
+    {{  "settings.oldPassword_error" |translate}}
+  </p> 
+  <div class="d-flex justify-content-end gap-2">
+    <button type="button" class="btn rounded-8 px-4 py-2 btn-light" translate="global.cancel"
+      (click)="closeModal(modalid)"></button>
+  </div>
+</app-modal> -->
